@@ -1,0 +1,82 @@
+---
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .Rmd
+      format_name: rmarkdown
+      format_version: '1.1'
+      jupytext_version: 1.2.1
+  kernelspec:
+    display_name: Python 3
+    language: python
+    name: python3
+---
+
+```{python}
+import pandas as pd, matplotlib.pyplot as plt, numpy as np
+```
+
+```{python}
+data_dir = '../data/P00000001-ALL.csv'
+```
+
+```{python}
+
+```
+
+```{python}
+dateparse = lambda x: pd.datetime.strptime(x, '%d-%b-%y')
+contributions = pd.read_csv(data_dir, index_col=False, parse_dates=['contb_receipt_dt'], date_parser=dateparse)
+```
+
+```{python}
+contributions.head()
+```
+
+# Contributions By Candidate
+
+```{python}
+contributions.groupby('cand_nm')['contb_receipt_amt'].sum().plot.bar()
+```
+
+```{python}
+contributions_by_individual = contributions.groupby('contbr_nm')['contb_receipt_amt'].sum().sort_values()
+contributions_by_individual.tail()
+```
+
+# Plot of 
+
+```{python}
+plt.hist(np.log(contributions_by_individual+np.abs(contributions_by_individual.iloc[0])+1))
+plt.xlabel('log contribution')
+plt.xlabel('Frequency')
+```
+
+```{python}
+contributions[contributions['contbr_nm'] == 'YANG, ANDREW']
+```
+
+# Plotting contributions to a candidate over time
+## List of Candidates
+
+```{python}
+print(contributions['cand_nm'].unique())
+```
+
+```{python}
+def plot_contributions_over_time(candidates):
+    for candidate in candidates:
+        df = contributions[contributions['cand_nm'] == candidate].sort_values(by='contb_receipt_dt')
+        df.index = df['contb_receipt_dt']
+        #xs, ys = df.index, 
+        df['contb_receipt_amt'].cumsum().plot(label=candidate)
+    plt.ylabel('($) Contributions')
+    plt.xlabel('Time')
+    plt.title(f'Cumulative contributions')
+    plt.legend()
+plot_contributions_over_time(['Biden, Joseph R Jr', 'Yang, Andrew', 'Trump, Donald J.'])
+```
+
+```{python}
+
+```
