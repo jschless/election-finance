@@ -65,8 +65,17 @@ plt.title('Total Contributions by State')
 
 ```{python}
 plt.figure(figsize=(15,15))
-dems.groupby('contbr_st')['contb_receipt_amt'].sum().plot.bar(x=ind, width=width, label='Democrats', color='b')
-repubs.groupby('contbr_st')['contb_receipt_amt'].sum().plot.bar(x=ind+width, width=width, label='Republicans', color='r')
+dems.groupby('contbr_st')['contb_receipt_amt'].sum().plot.bar(label='Democrats', color='b')
+repubs.groupby('contbr_st')['contb_receipt_amt'].sum().plot.bar(label='Republicans', color='r')
+plt.legend()
+```
+
+# Above plot hides data, here is its opposite
+
+```{python}
+plt.figure(figsize=(15,15))
+repubs.groupby('contbr_st')['contb_receipt_amt'].sum().plot.bar(label='Republicans', color='r')
+dems.groupby('contbr_st')['contb_receipt_amt'].sum().plot.bar(label='Democrats', color='b')
 plt.legend()
 ```
 
@@ -89,16 +98,6 @@ ax.set_xticklabels(t1.index)
 plt.legend()
 ```
 
-```{python}
-plt.hist(np.log(contributions_by_individual+np.abs(contributions_by_individual.iloc[0])+1))
-plt.xlabel('log contribution')
-plt.xlabel('Frequency')
-```
-
-```{python}
-contributions[contributions['contbr_nm'] == 'YANG, ANDREW']
-```
-
 # Plotting contributions to a candidate over time
 ## List of Candidates
 
@@ -111,7 +110,6 @@ def plot_contributions_over_time(candidates):
     for candidate in candidates:
         df = contributions[contributions['cand_nm'] == candidate].sort_values(by='contb_receipt_dt')
         df.index = df['contb_receipt_dt']
-        #xs, ys = df.index, 
         df['contb_receipt_amt'].cumsum().plot(label=candidate)
     plt.ylabel('($) Contributions')
     plt.xlabel('Time')
@@ -120,6 +118,33 @@ def plot_contributions_over_time(candidates):
 plot_contributions_over_time(['Biden, Joseph R Jr', 'Yang, Andrew', 'Trump, Donald J.'])
 ```
 
-```{python}
+## Contributors to Multiple Campaigns
 
+```{python}
+contributors_to_multiple_campaigns = contributions.groupby('contbr_nm').filter(lambda x : len(x['cand_nm'].unique()) > 1)
+```
+
+```{python}
+contributors_to_multiple_campaigns.groupby(['contbr_nm', 'cand_nm']).sum()['contb_receipt_amt']
+```
+
+```{python}
+print(f'Number of people contributing to multiple candidates: {len(contributors_to_multiple_campaigns["contbr_nm"].unique())}')
+```
+
+## Graph Construction
+Options:
+1. Undirected graph, unweighted (for now)
+   - Draw an edge between contributors if they contributed to the same candidate
+
+2. Directed multigraph, weighted
+   - draw an edge from contributor to candidate with weight being amount of contributions
+   
+Need to be smart potentially about graph csonstruction, considering high number of edges with option(1)
+Below code will crash kernel
+
+```{python}
+#import itertools
+#edge_list = []
+#contributions.groupby('cand_nm').apply(lambda x: edge_list.extend(itertools.combinations(x['contbr_nm'], #2)))
 ```
