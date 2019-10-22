@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 
+
 def load_dataset():
     data_dir = 'data/P00000001-ALL.csv'
     dateparse = lambda x: pd.datetime.strptime(x, '%d-%b-%y')
@@ -15,10 +16,11 @@ def load_dataset():
 
     return df
 
+
 def clean_employers(df):
-    corrections = {'SELF EMPLOYED':'SELF-EMPLOYED',
-                   'SELF':'SELF-EMPLOYED',
-                   'INFORMATION REQUESTED':'NONE',
+    corrections = {'SELF EMPLOYED': 'SELF-EMPLOYED',
+                   'SELF': 'SELF-EMPLOYED',
+                   'INFORMATION REQUESTED': 'NONE',
                    'INFORMATION REQUESTED PER BEST EFFORTS': 'NONE',
                    'NOT-EMPLOYED': 'NOT EMPLOYED',
                    'UNEMPLOYED': 'NOT EMPLOYED',
@@ -40,6 +42,7 @@ def clean_employers(df):
         df['contbr_employer'] = df.contbr_employer.str.replace(val, '')
     return df
 
+
 def clean_occupations(df):
     corrections = {'INFORMATION REQUESTED PER BEST EFFORTS': 'INFORMATION REQUESTED',
                    'OWNER': 'SELF-EMPLOYED',
@@ -47,12 +50,12 @@ def clean_occupations(df):
                    'BUSINESS OWNER': 'SELF-EMPLOYED',
                    'SMALL BUSINESS OWNER': 'SELF-EMPLOYED',
                    'ENTREPRENEUR': 'SELF-EMPLOYED',
-                   'CONTRACTOR':'SELF-EMPLOYED',
-                   'RN':'NURSE',
+                   'CONTRACTOR': 'SELF-EMPLOYED',
+                   'RN': 'NURSE',
                    'R.N.': 'NURSE',
                    'REGISTERED NURSE': 'NURSE',
-                   'TRUCK DRIVER':'DRIVER',
-                   'REAL ESTATE BROKER':'REAL ESTATE',
+                   'TRUCK DRIVER': 'DRIVER',
+                   'REAL ESTATE BROKER': 'REAL ESTATE',
                    'COMMERCIAL REAL ESTATE': 'REAL ESTATE',
                    'REALTOR': 'REAL ESTATE',
                    'M.D.': 'PHYSICIAN',
@@ -64,6 +67,7 @@ def clean_occupations(df):
     # Could group together executives and various other positions
     df['contbr_occupation'] = df['contbr_occupation'].replace(corrections)
     return df
+
 
 # TODO: Figure out if any implementation is necessary
 def remove_negative(df):
