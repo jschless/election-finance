@@ -17,6 +17,19 @@ def load_dataset():
     return df
 
 
+def load_polls():
+    # returns df with poll information
+    data_dir = 'data/president_primary_polls.csv'
+    raw_polls = pd.read_csv(data_dir, parse_dates=['created_at', 'start_date', 'end_date'])
+
+    # there's lots of extra info in the df
+    columns_to_keep = ['poll_id', 'start_date', 'end_date', 'party', 'candidate_name', 'pct', 'created_at', 'state', 'pollster', 'sponsors', 'pollster_rating_name', 'fte_grade', 'sample_size']
+    
+    df = raw_polls[columns_to_keep]
+
+    return df
+
+
 def clean_employers(df):
     corrections = {'SELF EMPLOYED': 'SELF-EMPLOYED',
                    'SELF': 'SELF-EMPLOYED',
