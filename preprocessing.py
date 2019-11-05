@@ -100,3 +100,14 @@ def add_fields(df):
 
     df['in_50_states'] = np.where(df['contbr_st'].isin(us_states), 1, 0)
     return df
+
+
+def redownload_data():
+    # automates downloading the updated data
+    # hopefully they don't change the link :)
+
+    import wget, zipfile
+    url = "https://cg-519a459a-0ea3-42c2-b7bc-fa1143481f74.s3-us-gov-west-1.amazonaws.com/bulk-downloads/Presidential_Map/2020/P00000001/P00000001-ALL.zip"
+    filename = wget.download(url, out='./data/')
+    with zipfile.ZipFile(filename, "r") as zip_ref:
+        zip_ref.extractall("./data/")
