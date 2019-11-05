@@ -32,7 +32,7 @@ def load_polls():
 
 def load_debates():
     # returns list of democratic debate dates
-    dem_debates = [datetime(2019,6,26), pd.datetime(2019,6,27), pd.datetime(2019,7,30),
+    dem_debates = [pd.datetime(2019,6,26), pd.datetime(2019,6,27), pd.datetime(2019,7,30),
                    pd.datetime(2019,7,31), pd.datetime(2019,9,12), pd.datetime(2019,10,15)]
     return dem_debates
 
