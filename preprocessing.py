@@ -30,6 +30,13 @@ def load_polls():
     return df
 
 
+def load_debates():
+    # returns list of democratic debate dates
+    dem_debates = [datetime(2019,6,26), pd.datetime(2019,6,27), pd.datetime(2019,7,30),
+                   pd.datetime(2019,7,31), pd.datetime(2019,9,12), pd.datetime(2019,10,15)]
+    return dem_debates
+
+
 def clean_employers(df):
     corrections = {'SELF EMPLOYED': 'SELF-EMPLOYED',
                    'SELF': 'SELF-EMPLOYED',
