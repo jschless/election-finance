@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-
+import wget, zipfile
 
 def load_dataset():
     data_dir = 'data/P00000001-ALL.csv'
@@ -13,6 +13,8 @@ def load_dataset():
     df = add_fields(filtered_df)
     df = clean_employers(df)
     df = clean_occupations(df)
+
+    #TODO: Remove donations for 2018 (and possibly for 2020G?)
 
     return df
 
@@ -96,7 +98,9 @@ def remove_negative(df):
 
 def add_fields(df):
     # Add party affiliation
-    df['party'] = np.where(df['cand_nm'] == 'Trump, Donald J.', 'Republican', 'Democratic')
+
+    republicans = ['Trump, Donald J.', 'Weld, William Floyd (Bill)']
+    df['party'] = np.where(df['cand_nm'].isin(republicans), 'Republican', 'Democratic')
 
     us_states = ['AL', 'AZ', 'CA', 'CO', 'CT', 'DC', 'DE', 'FL', 'GA', 'IA',
                  'ID', 'IL', 'IN', 'KS', 'KY', 'MA', 'MD', 'ME', 'MI', 'MN', 'MO',
@@ -106,6 +110,13 @@ def add_fields(df):
                  'SD', 'VT', 'WY']
 
     df['in_50_states'] = np.where(df['contbr_st'].isin(us_states), 1, 0)
+
+    # Adding unique contributor ID using the name and zip code
+    df['contbr_id'] = df['contbr_nm'].map(str) + '_' + df['contbr_zip'].map(str)
+    df['month'] = df['contb_receipt_dt'].values.astype('datetime64[M]')
+
+    #TODO: Should we flag massive donations (>$1M+) and big unitemized donations
+
     return df
 
 
@@ -113,7 +124,6 @@ def redownload_data():
     # automates downloading the updated data
     # hopefully they don't change the link :)
 
-    import wget, zipfile
     url = "https://cg-519a459a-0ea3-42c2-b7bc-fa1143481f74.s3-us-gov-west-1.amazonaws.com/bulk-downloads/Presidential_Map/2020/P00000001/P00000001-ALL.zip"
     filename = wget.download(url, out='./data/')
     with zipfile.ZipFile(filename, "r") as zip_ref:
