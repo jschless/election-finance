@@ -24,9 +24,13 @@ def load_polls():
 
     # there's lots of extra info in the df
     columns_to_keep = ['poll_id', 'start_date', 'end_date', 'party', 'candidate_name', 'pct', 'created_at', 'state', 'pollster', 'sponsors', 'pollster_rating_name', 'fte_grade', 'sample_size']
-    
+
     df = raw_polls[columns_to_keep]
 
+    grade_to_num = {'D-': 0, 'C-': 1,'C': 2, 'C+': 3, 'B-': 4, 'B': 5, 'B+': 6, 'A-': 7, 'A': 8, 'A+': 9}
+    df['fte_grade_num'] = df.fte_grade.apply(lambda x: grade_to_num.get(x, -1))
+    # assigns a numeric value for the poll grades 
+    
     return df
 
 
