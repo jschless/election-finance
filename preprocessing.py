@@ -65,9 +65,8 @@ def load_polls():
                  'Paul Ryan': 'Ryan, Timothy J.'}
 
     # might as well change the name of the column to be consistent too
-    df.cand_nm = df.candidate_name.apply(lambda x: name_dict.get(x, 'Unknown'))
-    df.drop(columns=['candidate_name'])
-    
+    df['cand_nm'] = df.candidate_name.apply(lambda x: name_dict.get(x, 'Unknown'))
+    df = df.drop(columns=['candidate_name'])
     return df
 
 
