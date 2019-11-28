@@ -26,9 +26,47 @@ def load_polls():
 
     # there's lots of extra info in the df
     columns_to_keep = ['poll_id', 'start_date', 'end_date', 'party', 'candidate_name', 'pct', 'created_at', 'state', 'pollster', 'sponsors', 'pollster_rating_name', 'fte_grade', 'sample_size']
-    
+
     df = raw_polls[columns_to_keep]
 
+    grade_to_num = {'D-': 0, 'C-': 1,'C': 2, 'C+': 3, 'B-': 4, 'B': 5, 'B+': 6, 'A-': 7, 'A': 8, 'A+': 9}
+    df['fte_grade_num'] = df.fte_grade.apply(lambda x: grade_to_num.get(x, -1))
+    # assigns a numeric value for the poll grades 
+
+    # make candidate names the same in polls and contribution data
+    name_dict = {'Joseph R. Biden Jr.': 'Biden, Joseph R Jr',
+                 'Elizabeth Warren': 'Warren, Elizabeth ',
+                 'Bernard Sanders': 'Sanders, Bernard',
+                 'Pete Buttigieg': 'Buttigieg, Pete',
+                 'Kamala D. Harris': 'Harris, Kamala D.',
+                 'Cory A. Booker': 'Booker, Cory A.',
+                 'Amy Klobuchar': 'Klobuchar, Amy J.',
+                 'Andrew Yang': 'Yang, Andrew',
+                 'Tim Ryan': 'Ryan, Timothy J.',
+                 'Steve Bullock': 'Bullock, Steve',
+                 'Julián Castro': 'Castro, Julián',
+                 'John K. Delaney': 'Delaney, John K.',
+                 'Tulsi Gabbard': 'Gabbard, Tulsi',
+                 'Tom Steyer': 'Steyer, Tom',
+                 'Joe Sestak': 'Sestak, Joseph A. Jr.',
+                 'Marianne Williamson': 'Williamson, Marianne ',
+                 'Michael F. Bennet': 'Bennet, Michael F.',
+                 'Donald Trump': 'Trump, Donald J.',
+                 'Joe Walsh': 'Walsh, Joe',
+                 'William F. Weld': 'Weld, William Floyd (Bill)',
+                 'Bill de Blasio': 'de Blasio, Bill',
+                 'Jay Robert Inslee': 'Inslee, Jay R',
+                 'Kirsten E. Gillibrand': 'Gillibrand, Kirsten ',
+                 'Mike Gravel': 'Gravel, Maurice Robert',
+                 'Eric Swalwell': 'Swalwell, Eric Michael',
+                 'John Hickenlooper': 'Hickenlooper, John W.',
+                 'Seth Moulton': 'Moulton, Seth',
+                 'Richard Neece Ojeda': 'Ojeda, Richard Neece II',
+                 'Paul Ryan': 'Ryan, Timothy J.'}
+
+    # might as well change the name of the column to be consistent too
+    df['cand_nm'] = df.candidate_name.apply(lambda x: name_dict.get(x, 'Unknown'))
+    df = df.drop(columns=['candidate_name'])
     return df
 
 
