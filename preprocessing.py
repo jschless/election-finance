@@ -8,7 +8,7 @@ def load_dataset():
     raw_df = pd.read_csv(data_dir, index_col=False, parse_dates=['contb_receipt_dt'], date_parser=dateparse,
                          low_memory=False)
 
-    filtered_df = remove_negative(raw_df)
+    filtered_df = filter(raw_df)
 
     df = add_fields(filtered_df)
     df = clean_employers(df)
@@ -91,8 +91,8 @@ def clean_occupations(df):
     return df
 
 
-# TODO: Figure out if any implementation is necessary
-def remove_negative(df):
+def filter(df):
+    df = df[df['contb_receipt_amt']<= 2800]  # Remove superpacs and carried over amounts
     return df
 
 
