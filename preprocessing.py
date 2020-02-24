@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import numpy as np
 import pandas as pd
 import wget, zipfile
@@ -123,7 +124,9 @@ def clean_occupations(df):
                    'DOCTOR': 'PHYSICIAN',
                    'MEDICAL DOCTOR': 'PHYSICIAN',
                    'GRADUATE STUDENT': 'STUDENT',
-                   'SUBSTITUTE TEACHER': 'TEACHER'}
+                   'SUBSTITUTE TEACHER': 'TEACHER',
+                   'PROGRAMMER': 'SOFTWARE DEVELOPER',
+                   'SOFTWARE ENGINEER': 'SOFTWARE DEVELOPER'}
     # Could group together executives and various other positions
     df['contbr_occupation'] = df['contbr_occupation'].replace(corrections)
     return df
